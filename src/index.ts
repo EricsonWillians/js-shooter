@@ -1,19 +1,31 @@
-import { Application, Sprite } from 'pixi.js'
+import { Application } from "pixi.js";
+import { handlePlayerEvents, spawnPlayer } from "./player";
+// @ts-ignore
+import keyboard from "pixi.js-keyboard";
+import { spawnEnemy, handleEnemyEvents } from "./enemy";
 
 const app = new Application({
-	view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
-	resolution: window.devicePixelRatio || 1,
-	autoDensity: true,
-	backgroundColor: 0x6495ed,
-	width: 640,
-	height: 480
+  view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
+  resolution: window.devicePixelRatio || 1,
+  autoDensity: true,
+  backgroundColor: 0x777777,
+  width: window.innerWidth,
+  height: window.innerHeight,
 });
 
-const clampy: Sprite = Sprite.from("clampy.png");
+app.ticker.add((delta) => gameLoop(delta));
+const gameLoop = (delta: number) => {
+  // Update the current game state:
+  run(delta);
 
-clampy.anchor.set(0.5);
+  keyboard.update();
+};
 
-clampy.x = app.screen.width / 2;
-clampy.y = app.screen.height / 2;
+spawnPlayer(app);
+spawnEnemy(app);
 
-app.stage.addChild(clampy);
+const run = (delta: number) => {
+  console.log("delta", delta);
+  handlePlayerEvents();
+  handleEnemyEvents(app);
+};
