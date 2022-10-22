@@ -1,6 +1,8 @@
 import { Sprite, Texture } from "pixi.js";
 // @ts-ignore
 import keyboard from "pixi.js-keyboard";
+import { app } from ".";
+import { intersectSquares } from "./util/col";
 
 const player = Sprite.from(Texture.WHITE);
 const playerState = {
@@ -13,7 +15,7 @@ const PLAYER_SPEED = 8;
 const PLAYER_COLOR = 0x00ff00;
 const PLAYER_RUNNING_SPEED = PLAYER_SPEED * 2;
 
-export const spawnPlayer = (app: any): void => {
+export const spawnPlayer = (): any => {
   player.width = PLAYER_SIZE;
   player.height = PLAYER_SIZE;
   player.tint = PLAYER_COLOR;
@@ -23,11 +25,20 @@ export const spawnPlayer = (app: any): void => {
   player.y = app.screen.height / 2;
 
   app.stage.addChild(player);
+
+  return player;
 };
 
 export const getCurrentSpeed = (): number => {
   return playerState?.isRunning ? PLAYER_RUNNING_SPEED : PLAYER_SPEED;
 };
+
+export const collideWithEnemy = (enemy: any): void => {
+  if (intersectSquares(player, enemy)) {
+    playerState.lives -= 1;
+    app.stage.removeChild(enemy);
+  }
+}
 
 export const handlePlayerEvents = () => {
   // Keyboard
@@ -42,6 +53,9 @@ export const handlePlayerEvents = () => {
   } else {
     playerState.isRunning = false;
   }
+
+  console.log(playerState)
+
 };
 
 export default player;

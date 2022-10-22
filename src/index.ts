@@ -1,10 +1,10 @@
 import { Application } from "pixi.js";
-import { handlePlayerEvents, spawnPlayer } from "./player";
+import { collideWithEnemy, handlePlayerEvents, spawnPlayer } from "./player";
 // @ts-ignore
 import keyboard from "pixi.js-keyboard";
 import { spawnEnemy, handleEnemyEvents } from "./enemy";
 
-const app = new Application({
+export const app = new Application({
   view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
   resolution: window.devicePixelRatio || 1,
   autoDensity: true,
@@ -21,11 +21,11 @@ const gameLoop = (delta: number) => {
   keyboard.update();
 };
 
-spawnPlayer(app);
-spawnEnemy(app);
+spawnPlayer();
+const enemy = spawnEnemy();
 
-const run = (delta: number) => {
-  console.log("delta", delta);
+const run = (_delta: number) => {
   handlePlayerEvents();
-  handleEnemyEvents(app);
+  handleEnemyEvents();
+  collideWithEnemy(enemy)
 };
